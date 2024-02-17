@@ -9,9 +9,16 @@
   </head>
   <body>
 
+            <div class="container">
+              <form action="" class="form">
+                <label class="input" for="input"><input type="text" name="input" placeholder="Search images..." /></label>
+                <button class="btn" type="submit">Search</button>
+              </form>
+              <span class="loader hidden"></span>
+              <ul class="gallery"></ul>
+            </div>
+
     <script type="module" src="./main.js"></script>
-    <script type="module" src="./js/pixabay-api.js"></script>
-    <script type="module" src="./js/render-functions.js"></script>
 
   </body>
 </html>
