@@ -11,22 +11,20 @@ const refs = {
   formElem: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
+  loadMoreBtn: document.querySelector('.load-more-btn'),
 };
 
-// function showLoader() {
-//   loader.classList.remove('hidden');
-// }
-
-// function hideLoader() {
-//   loader.classList.add('hidden');
-// }
+let query;
+let page;
+let maxPage;
 
 refs.formElem.addEventListener('submit', onFormSubmit);
+refs.loadMoreBtn.addEventListener('click', onLoadMoreClick);
 
 async function onFormSubmit(e) {
   e.preventDefault();
 
-  const query = e.target.elements.input.value.trim();
+  query = e.target.elements.input.value.trim();
 
   if (!query) {
     iziToast.error({
@@ -37,13 +35,43 @@ async function onFormSubmit(e) {
     return;
   }
 
-  const data = await fetchArticles(query);
+  page = 1;
+  showLoader();
 
-  refs.gallery.innerHTML = '';
+  try {
+    const data = await fetchArticles(query, page);
+    if (data.hits.length === 0) {
+      iziToast.error({
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topRight',
+      });
+      return;
+    }
+    maxPage = Math.ceil(data.total / 10);
 
-  renderMarkups(data.hits);
+    refs.gallery.innerHTML = '';
+    renderMarkups(data.hits);
+  } catch (err) {
+    showError(err);
+    maxPage = 0;
+    refs.gallery.innerHTML = '';
+  }
+
+  hideLoader();
+  checkBtnVisibleStatus();
 
   e.target.reset();
+}
+
+async function onLoadMoreClick() {
+  page += 1;
+  showLoader();
+  const data = await fetchArticles(query, page);
+
+  renderMarkups(data.hits);
+  hideLoader();
+  checkBtnVisibleStatus();
 }
 
 function renderMarkups(hits) {
@@ -52,6 +80,29 @@ function renderMarkups(hits) {
   refs.gallery.insertAdjacentHTML('beforeend', markup);
   const lightbox = new SimpleLightbox('.gallery a', options);
   lightbox.refresh();
+}
+
+function showLoadBtn() {
+  refs.loadMoreBtn.classList.remove('hidden');
+}
+function hideLoadBtn() {
+  refs.loadMoreBtn.classList.add('hidden');
+}
+
+function checkBtnVisibleStatus() {
+  if (page >= maxPage) {
+    hideLoadBtn();
+  } else {
+    showLoadBtn();
+  }
+}
+
+function showLoader() {
+  refs.loader.classList.remove('hidden');
+}
+
+function hideLoader() {
+  refs.loader.classList.add('hidden');
 }
 
 const options = {

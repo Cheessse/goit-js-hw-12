@@ -53,6 +53,26 @@ input:focus {
     background-color: #6c8cff;
 }
 
+.load-more-btn {
+    color: #fff;
+    font-weight: 500;
+    padding: 8px 16px;
+    line-height: 1.5;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    border-radius: 8px;
+    background-color: #4e75ff;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.load-more-btn:hover {
+    background-color: #6c8cff;
+}
+
 .gallery {
     display: flex;
     flex-wrap: wrap;
