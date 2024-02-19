@@ -72,6 +72,11 @@ async function onLoadMoreClick() {
   renderMarkups(data.hits);
   hideLoader();
   checkBtnVisibleStatus();
+
+  scrollBy({
+    behavior: 'smooth',
+    top: '500',
+  });
 }
 
 function renderMarkups(hits) {
